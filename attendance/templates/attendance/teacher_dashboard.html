@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #eef4ff;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card {
+            background: #f1f7ff;
+            border: 1px solid #cfe0ff;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card a {
+            display: inline-block;
+            margin-top: 12px;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+        .nav {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: bold;
+        }
+    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'attendance/theme.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ teacher_name }}</h1>
+
+        <p style="text-align:center; margin-bottom: 20px;">
+            <strong>Teacher ID:</strong> {{ teacher_id }}
+        </p>
+
+        <p style="text-align:center; margin-bottom: 20px;">
+            <strong>Assigned Subjects:</strong>
+            {% if assigned_subjects %}
+                {% for subject in assigned_subjects %}
+                    {{ subject.code }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                No subject assigned
+            {% endif %}
+        </p>
+
+        <div class="cards dashboard-stats">
+            <div class="card"><strong>{{ assigned_subjects|length }}</strong><span>Subjects Assigned</span></div>
+            <div class="card"><strong>{{ total_records }}</strong><span>Records Created</span></div>
+            <div class="card"><strong>{{ present_percentage }}%</strong><span>Present Rate</span></div>
+        </div>
+
+        <div class="cards">
+            {% for subject in assigned_subjects %}
+                <div class="card">
+                    <h3>{{ subject.code }}</h3>
+                    <p>{{ subject.name }}</p>
+                    <a href="{% url 'teacher_subject_attendance' subject.code %}">Manage Attendance</a>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <h3>No subject assigned</h3>
+                    <p>You are not assigned to any subject yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="nav">
+            <a href="{% url 'teacher_logout' %}">Logout</a>
+            <a href="{% url 'home' %}" style="margin-left: 15px;">Home</a>
+        </div>
+    </div>
+</body>
+</html>

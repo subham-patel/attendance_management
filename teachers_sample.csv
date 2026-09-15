@@ -1,0 +1,8 @@
+username,name,email,employee_id,subjects,password
+teacher_ips1,Aarav Teacher,aarav.teacher@example.com,TCH-001,IPS1,CHANGE-ME
+teacher_fmi1,Meera Teacher,meera.teacher@example.com,TCH-002,FMI1,CHANGE-ME
+teacher_itc,Riya Teacher,riya.teacher@example.com,TCH-003,ITC,CHANGE-ME
+teacher_ppwc,Kabir Teacher,kabir.teacher@example.com,TCH-004,PPWC,CHANGE-ME
+teacher_dpos,Sneha Teacher,sneha.teacher@example.com,TCH-005,DPOS,CHANGE-ME
+teacher_cn,Dev Teacher,dev.teacher@example.com,TCH-006,CN,CHANGE-ME
+teacher_mlc1,Nisha Teacher,nisha.teacher@example.com,TCH-007,MLC1,CHANGE-ME

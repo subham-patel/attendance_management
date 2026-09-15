@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #eef4ff;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        input, select, button {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dbe4f0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #e0edff;
+        }
+        .status-present { color: #15803d; font-weight: bold; }
+        .status-absent { color: #b91c1c; font-weight: bold; }
+        .status-late { color: #b45309; font-weight: bold; }
+        .nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nav a {
+            display: inline-block;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: bold;
+        }
+    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'attendance/theme.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Attendance</h1>
+
+        {% if student %}
+            <div class="student-identity">
+                <span class="identity-kicker">Student profile</span>
+                <span><strong>Roll No</strong><b>{{ student.roll_no|default:'-' }}</b></span>
+                <span><strong>Regd. No</strong><b>{{ student.regd_no }}</b></span>
+                <span><strong>Student Name</strong><b>{{ student.name }}</b></span>
+            </div>
+        {% else %}
+            <form method="get">
+                <input type="text" name="regd_no" value="{{ selected_regd_no }}" placeholder="Search by Registration No">
+                <select name="subject">
+                    <option value="">All Subjects</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.code }}" {% if selected_subject == subject.code %}selected{% endif %}>{{ subject.code }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        {% endif %}
+
+        <table>
+            <thead>
+                <tr>
+                    {% if student %}
+                        <th>Subject</th>
+                        <th>Attendance</th>
+                        <th>Attendance Percentage</th>
+                    {% else %}
+                        <th>Roll No</th>
+                        <th>Registration No</th>
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Attendance</th>
+                        <th>Attendance Percentage</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in attendance_summary %}
+                    <tr>
+                        {% if student %}
+                            <td>{{ item.subject.code }}</td>
+                            <td>{{ item.attendance_amount }} / {{ item.total_records }}</td>
+                            <td>{{ item.attendance_percentage }}%</td>
+                        {% else %}
+                            <td>{{ item.student.roll_no|default:'-' }}</td>
+                            <td>{{ item.student.regd_no }}</td>
+                            <td>{{ item.student.name }}</td>
+                            <td>{{ item.subject.code }}</td>
+                            <td>{{ item.attendance_amount }} / {{ item.total_records }}</td>
+                            <td>{{ item.attendance_percentage }}%</td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        {% if student %}
+                            <td colspan="3" style="text-align:center;">No attendance records found.</td>
+                        {% else %}
+                            <td colspan="6" style="text-align:center;">No attendance records found.</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="nav">
+            <a href="{% url 'home' %}">Home</a>
+            {% if student %}
+                <a href="{% url 'student_logout' %}">Logout</a>
+            {% else %}
+                <a href="/admin/">Admin Panel</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #eef6ff, #dfeeff);
+            color: #1f2937;
+        }
+        .container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input, button {
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+        }
+        .nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: bold;
+        }
+    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'attendance/theme.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Login</h1>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="regd_no" placeholder="Enter Registration Number" required>
+            <input type="text" name="name" placeholder="Enter Name" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="nav">
+            <a href="{% url 'home' %}">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'attendance/theme.css' %}">
+</head>
+<body>
+    <main class="container">
+        <h1 class="home-title">Admin Dashboard</h1>
+        <p class="tagline">The whole attendance signal, in one place.</p>
+        <div class="cards dashboard-stats">
+            <div class="card"><strong>{{ total_students }}</strong><span>Total Students</span></div>
+            <div class="card"><strong>{{ total_teachers }}</strong><span>Total Teachers</span></div>
+            <div class="card"><strong>{{ total_records }}</strong><span>Attendance Records</span></div>
+            <div class="card"><strong>{{ present_percentage }}%</strong><span>Present Percentage</span></div>
+        </div>
+        <div class="nav">
+            <a href="{% url 'admin:index' %}">Django Admin</a>
+            <a href="{% url 'home' %}">Home</a>
+        </div>
+    </main>
+</body>
+</html>

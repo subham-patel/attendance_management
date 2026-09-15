@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject.code }} Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f3f7ff;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dbe4f0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #e0edff;
+        }
+        .nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: bold;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages li {
+            list-style: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #dcfce7;
+            color: #166534;
+            margin-bottom: 10px;
+        }
+        .messages .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'attendance/theme.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ subject.code }} Attendance</h1>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="topbar">
+                <label for="attendance_date">Date:</label>
+                <input type="date" name="attendance_date" value="{{ attendance_date }}" required>
+                <button type="submit">Save Attendance</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Reg No</th>
+                        <th>Student Name</th>
+                        <th>Attendance</th>
+                        <th>Attendance Percentage</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_no|default:'-' }}</td>
+                            <td>{{ student.regd_no }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.attendance_amount }} / {{ student.total_records }}</td>
+                            <td>{{ student.attendance_percentage }}%</td>
+                            <td>
+                                <div class="status-control">
+                                    <select name="status_{{ student.id }}" class="status-select" data-status-select>
+                                        <option value="" selected disabled>Choose status</option>
+                                    <option value="present">Present</option>
+                                    <option value="absent">Absent</option>
+                                    </select>
+                                    <span class="status-indicator" data-status-indicator>Choose status</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+        <div class="nav">
+            <a href="{% url 'teacher_dashboard' %}">Back to Dashboard</a>
+            <a href="{% url 'teacher_logout' %}" style="margin-left: 15px;">Logout</a>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('[data-status-select]').forEach((select) => {
+            const indicator = select.parentElement.querySelector('[data-status-indicator]');
+
+            const updateStatusIndicator = () => {
+                indicator.textContent = select.value === 'present' ? '● Present' : select.value === 'absent' ? '● Absent' : 'Choose status';
+                indicator.className = `status-indicator ${select.value ? `status-${select.value}` : ''}`;
+            };
+
+            select.addEventListener('change', updateStatusIndicator);
+            updateStatusIndicator();
+        });
+    </script>
+</body>
+</html>
